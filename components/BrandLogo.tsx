@@ -10,9 +10,9 @@ export default function BrandLogo({ className = "", dark = false }: BrandLogoPro
       data-cursor="logo"
       src={dark ? "/logo-white.png" : "/logo.png"}
       alt="The Better Academy"
-      width={120}
-      height={50}
-      className={`h-7 w-auto sm:h-8 ${className}`}
+      width={160}
+      height={67}
+      className={`h-6 w-auto max-w-[7.5rem] object-contain object-center sm:h-8 sm:max-w-[9rem] ${className}`}
       decoding="async"
       fetchPriority="high"
       draggable={false}

@@ -20,7 +20,7 @@ type Floater = {
 const floaters: Floater[] = [
   {
     id: "reel",
-    className: "left-[4%] top-[22%] w-28 md:w-36",
+    className: "left-[4%] top-[22%] hidden w-28 sm:block md:w-36",
     depth: 22,
     float: "a",
     svg: (
@@ -55,7 +55,7 @@ const floaters: Floater[] = [
   },
   {
     id: "lens",
-    className: "right-[5%] top-[18%] w-24 md:w-32",
+    className: "right-[5%] top-[18%] hidden w-24 sm:block md:w-32",
     depth: -20,
     float: "b",
     svg: (
@@ -70,7 +70,7 @@ const floaters: Floater[] = [
   },
   {
     id: "storyboard",
-    className: "left-[6%] bottom-[20%] w-28 md:w-36",
+    className: "left-[6%] bottom-[20%] hidden w-28 sm:block md:w-36",
     depth: 16,
     float: "b",
     svg: (
@@ -85,7 +85,7 @@ const floaters: Floater[] = [
   },
   {
     id: "boom",
-    className: "right-[7%] bottom-[22%] w-28 md:w-36",
+    className: "right-[7%] bottom-[22%] hidden w-28 sm:block md:w-36",
     depth: -18,
     float: "a",
     svg: (

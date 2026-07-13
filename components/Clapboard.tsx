@@ -107,7 +107,7 @@ export default function Clapboard({
         scale: { duration: 0.35, ease },
         x: shake ? { duration: 0.26 } : { duration: 0.5 },
       }}
-      className="relative mx-auto block w-[min(90vw,380px)] border-0 bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-accent/35 sm:w-[420px] md:w-[460px] lg:w-[500px]"
+      className="relative mx-auto block w-[min(78vw,300px)] border-0 bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-accent/35 sm:w-[380px] md:w-[460px] lg:w-[500px]"
       style={{
         y: prefersReducedMotion ? undefined : floatY,
         rotateX: prefersReducedMotion ? 0 : rotateX,

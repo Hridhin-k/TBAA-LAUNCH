@@ -26,36 +26,18 @@ export default function RotatingHeadline() {
   }, [prefersReducedMotion]);
 
   return (
-    <h1 className="font-display text-[clamp(2.35rem,5.8vw,4.75rem)] font-semibold leading-[0.96] tracking-tight text-ink">
-      <span className="block overflow-hidden pb-0.5">
-        <motion.span
-          className="block"
-          initial={{ opacity: 0, y: 36 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.85, delay: 0.15, ease }}
-        >
-          Something
-        </motion.span>
-      </span>
-      <span className="block overflow-hidden pb-0.5">
-        <motion.span
-          className="block"
-          initial={{ opacity: 0, y: 36 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.85, delay: 0.22, ease }}
-        >
-          Better is
-        </motion.span>
-      </span>
-      <span className="relative mt-1 block h-[1.1em] overflow-hidden">
-        <AnimatePresence mode="wait">
+    <h1 className="font-display text-[clamp(2rem,8.5vw,4.75rem)] font-semibold leading-[1.02] tracking-tight text-ink">
+      <span className="block">Something</span>
+      <span className="block">Better is</span>
+      <span className="relative mt-0.5 block min-h-[1.15em]">
+        <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={WORDS[index]}
-            className="absolute left-0 right-0 block italic text-accent md:right-auto"
-            initial={{ opacity: 0, y: 24 }}
+            className="block italic text-accent"
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -24 }}
-            transition={{ duration: 0.5, ease }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.4, ease }}
           >
             {WORDS[index]}
           </motion.span>

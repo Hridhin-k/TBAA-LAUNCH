@@ -38,16 +38,16 @@ export default function Countdown() {
   }, []);
 
   return (
-    <div className="flex items-stretch gap-2 sm:gap-2.5" aria-live="polite">
+    <div className="flex w-full max-w-sm items-stretch justify-center gap-1.5 sm:max-w-none sm:gap-2.5" aria-live="polite">
       {units.map((unit) => (
         <div
           key={unit.label}
-          className="flex min-w-[4rem] flex-col items-center justify-center rounded-xl bg-[#1a1a1a] px-3 py-3 sm:min-w-[4.75rem] sm:px-3.5 sm:py-3.5"
+          className="flex min-w-0 flex-1 flex-col items-center justify-center rounded-xl bg-[#1a1a1a] px-2 py-2.5 sm:min-w-[4.75rem] sm:flex-none sm:px-3.5 sm:py-3.5"
         >
-          <span className="font-display text-[1.65rem] font-semibold leading-none tracking-tight text-[#f7f5f1] tabular-nums sm:text-[1.85rem]">
+          <span className="font-display text-[1.35rem] font-semibold leading-none tracking-tight text-[#f7f5f1] tabular-nums sm:text-[1.85rem]">
             {unit.value}
           </span>
-          <span className="mt-2 text-[9px] font-medium tracking-[0.2em] text-accent uppercase">
+          <span className="mt-1.5 text-[8px] font-medium tracking-[0.16em] text-accent uppercase sm:mt-2 sm:text-[9px] sm:tracking-[0.2em]">
             {unit.label}
           </span>
         </div>

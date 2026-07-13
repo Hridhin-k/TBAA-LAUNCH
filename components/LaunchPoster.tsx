@@ -81,7 +81,7 @@ export default function LaunchPoster() {
   }, []);
 
   return (
-    <div className="relative h-dvh w-full overflow-hidden bg-cream text-ink transition-colors duration-500">
+    <div className="relative min-h-dvh w-full bg-cream text-ink transition-colors duration-500 md:h-dvh md:overflow-hidden">
       {fxReady ? (
         <>
           <CustomCursor />
@@ -93,47 +93,54 @@ export default function LaunchPoster() {
       <div className="film-grain" aria-hidden="true" />
 
       <section
-        className="relative flex h-full flex-col overflow-hidden"
+        className="relative flex min-h-dvh flex-col md:h-full md:overflow-hidden"
         aria-label="The Better Academy launch"
       >
         <StudioBackdrop mouseX={mouseX} mouseY={mouseY} dark={dark} />
 
-        <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col px-5 py-5 sm:px-8 sm:py-6 md:px-12 md:py-8">
-          <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-            <motion.p
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease }}
-              className="flex items-center gap-2 text-[9px] tracking-[0.16em] text-stone uppercase sm:text-[10px]"
-            >
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-              <span className="hidden sm:inline">
-                Coming Soon // First Batch 2026
-              </span>
-              <span className="sm:hidden">Coming Soon</span>
-            </motion.p>
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-4 sm:px-8 sm:py-6 md:h-full md:px-12 md:py-8">
+          <header className="relative z-20 flex shrink-0 flex-col gap-3">
+            <div className="flex items-center justify-between gap-3 text-[9px] tracking-[0.14em] text-stone uppercase sm:text-[10px] sm:tracking-[0.16em]">
+              <motion.p
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease }}
+                className="flex min-w-0 items-center gap-2"
+              >
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                <span className="truncate">
+                  <span className="sm:hidden">Coming Soon</span>
+                  <span className="hidden sm:inline">
+                    Coming Soon // First Batch 2026
+                  </span>
+                </span>
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1, ease }}
+                className="shrink-0 text-right"
+              >
+                <span className="font-medium text-accent">
+                  <span className="sm:hidden">Preparing</span>
+                  <span className="hidden sm:inline">Studio Status // Preparing</span>
+                </span>
+              </motion.p>
+            </div>
 
             <motion.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.05, ease }}
+              className="flex justify-center"
             >
               <BrandLogo dark={dark} />
             </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease }}
-              className="justify-self-end text-right text-[9px] tracking-[0.16em] text-stone uppercase sm:text-[10px]"
-            >
-              Studio Status{" "}
-              <span className="font-medium text-accent">// Preparing</span>
-            </motion.p>
           </header>
 
-          <main className="flex min-h-0 flex-1 items-center py-4">
-            <div className="grid w-full items-center gap-8 md:grid-cols-[1fr_1.1fr] md:gap-10 lg:gap-14">
+          <main className="flex min-h-0 flex-1 flex-col justify-center py-5 md:py-4">
+            <div className="grid w-full items-center gap-6 md:grid-cols-[1fr_1.1fr] md:gap-10 lg:gap-14">
               <div className="flex flex-col items-center text-center md:items-start md:text-left">
                 <RotatingHeadline />
 
@@ -141,7 +148,7 @@ export default function LaunchPoster() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.85, delay: 0.45, ease }}
-                  className="mt-5 max-w-md text-sm leading-relaxed text-stone sm:mt-6 sm:text-[15px]"
+                  className="mt-4 max-w-md text-sm leading-relaxed text-stone sm:mt-6 sm:text-[15px]"
                 >
                   A founding cohort for people who&apos;d rather build the real
                   thing than watch another tutorial. Live drafts, working
@@ -153,16 +160,14 @@ export default function LaunchPoster() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.85, delay: 0.6, ease }}
-                  className="mt-7 flex w-full max-w-lg flex-col items-center gap-5 sm:mt-8 md:items-start"
+                  className="mt-5 flex w-full max-w-lg flex-col items-center gap-4 sm:mt-8 sm:gap-5 md:items-start"
                 >
                   <Countdown />
-                  <div className="flex flex-col items-center gap-2.5 sm:flex-row md:justify-start">
-                    <MagneticCTA
-                      href={AGENCY_URL}
-                      label="Visit The Better Agency"
-                      variant="primary"
-                    />
-                  </div>
+                  <MagneticCTA
+                    href={AGENCY_URL}
+                    label="Visit The Better Agency"
+                    variant="primary"
+                  />
                 </motion.div>
               </div>
 
@@ -182,16 +187,16 @@ export default function LaunchPoster() {
             </div>
           </main>
 
-          <footer className="flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-mist-dark pt-4 text-[8px] tracking-[0.18em] text-stone uppercase sm:text-[9px]">
+          <footer className="mt-4 grid shrink-0 grid-cols-1 gap-2 border-t border-mist-dark pt-3 text-center text-[8px] tracking-[0.16em] text-stone uppercase sm:mt-0 sm:grid-cols-3 sm:gap-x-4 sm:pt-4 sm:text-left sm:text-[9px] sm:tracking-[0.18em]">
             <span>
               <span className="font-medium text-ink">Cohort</span> — Founding
               Batch
             </span>
-            <span>
+            <span className="sm:text-center">
               <span className="font-medium text-ink">Format</span> — Studio +
               Live Drafts
             </span>
-            <span>
+            <span className="sm:text-right">
               <span className="font-medium text-ink">Location</span> — Thrissur,
               India
             </span>
