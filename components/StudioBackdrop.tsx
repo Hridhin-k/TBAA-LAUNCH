@@ -6,7 +6,7 @@ import { motion, type MotionValue, useTransform } from "framer-motion";
 type StudioBackdropProps = {
   mouseX: MotionValue<number>;
   mouseY: MotionValue<number>;
-  directorMode?: boolean;
+  dark?: boolean;
 };
 
 type Floater = {
@@ -160,7 +160,7 @@ const floaters: Floater[] = [
 export default function StudioBackdrop({
   mouseX,
   mouseY,
-  directorMode = false,
+  dark = false,
 }: StudioBackdropProps) {
   return (
     <div
@@ -176,7 +176,7 @@ export default function StudioBackdrop({
           item={item}
           mouseX={mouseX}
           mouseY={mouseY}
-          directorMode={directorMode}
+          dark={dark}
         />
       ))}
     </div>
@@ -187,12 +187,12 @@ function FloaterItem({
   item,
   mouseX,
   mouseY,
-  directorMode,
+  dark,
 }: {
   item: Floater;
   mouseX: MotionValue<number>;
   mouseY: MotionValue<number>;
-  directorMode: boolean;
+  dark: boolean;
 }) {
   const x = useTransform(mouseX, [-1, 1], [-item.depth, item.depth]);
   const y = useTransform(mouseY, [-1, 1], [-item.depth * 0.75, item.depth * 0.75]);
@@ -200,7 +200,7 @@ function FloaterItem({
   return (
     <motion.div
       style={{ x, y }}
-      className={`absolute text-ink ${directorMode ? "opacity-[0.14]" : "opacity-[0.07]"} ${item.float === "a" ? "animate-float-a" : "animate-float-b"} ${item.className}`}
+      className={`absolute text-ink ${dark ? "opacity-[0.12]" : "opacity-[0.06]"} ${item.float === "a" ? "animate-float-a" : "animate-float-b"} ${item.className}`}
     >
       {item.svg}
     </motion.div>

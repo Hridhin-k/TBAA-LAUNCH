@@ -7,14 +7,14 @@ type MagneticCTAProps = {
   href: string;
   label: string;
   variant?: "primary" | "secondary";
-  onClick?: () => void;
+  external?: boolean;
 };
 
 export default function MagneticCTA({
   href,
   label,
   variant = "primary",
-  onClick,
+  external = false,
 }: MagneticCTAProps) {
   const ref = useRef<HTMLAnchorElement | null>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -46,15 +46,15 @@ export default function MagneticCTA({
   };
 
   const isPrimary = variant === "primary";
+  const arrow = external || variant === "secondary" ? "↗" : "→";
 
   return (
     <motion.a
       ref={ref}
       href={href}
-      target={href.startsWith("http") ? "_blank" : undefined}
-      rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+      target="_blank"
+      rel="noopener noreferrer"
       data-cursor="button"
-      onClick={onClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onFocus={() => setIsHovered(true)}
@@ -62,18 +62,18 @@ export default function MagneticCTA({
       style={prefersReducedMotion ? undefined : { x, y }}
       className={
         isPrimary
-          ? "inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-display text-sm font-semibold tracking-tight text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-7 sm:text-base"
-          : "inline-flex items-center gap-2 rounded-full border border-mist-dark bg-transparent px-6 py-3 font-display text-sm font-semibold tracking-tight text-ink outline-none transition-colors hover:border-ink/30 focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-7 sm:text-base"
+          ? "inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-display text-sm font-semibold tracking-tight text-cream outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-7 sm:text-base"
+          : "inline-flex items-center gap-2 rounded-full border border-mist-dark bg-transparent px-6 py-3 font-display text-sm font-semibold tracking-tight text-ink outline-none transition-colors hover:border-ink/40 focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-7 sm:text-base"
       }
-      aria-label={label}
+      aria-label={`${label} (opens in new tab)`}
     >
       {label}
       <motion.span
-        animate={{ x: isHovered ? 4 : 0 }}
+        animate={{ x: isHovered ? 3 : 0, y: isHovered && external ? -2 : 0 }}
         transition={{ ease: "easeOut", duration: 0.25 }}
         aria-hidden="true"
       >
-        →
+        {arrow}
       </motion.span>
     </motion.a>
   );

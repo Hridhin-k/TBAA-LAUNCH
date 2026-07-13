@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   motion,
   useMotionValue,
@@ -13,9 +13,8 @@ import {
 type ClapboardProps = {
   mouseX: MotionValue<number>;
   mouseY: MotionValue<number>;
-  onClack?: () => void;
-  onFiveClicks?: () => void;
-  onHoverChange?: (hovered: boolean) => void;
+  onToggleTheme?: () => void;
+  dark?: boolean;
 };
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -23,49 +22,35 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export default function Clapboard({
   mouseX,
   mouseY,
-  onClack,
-  onFiveClicks,
-  onHoverChange,
+  onToggleTheme,
+  dark = false,
 }: ClapboardProps) {
   const prefersReducedMotion = useReducedMotion();
-  const [phase, setPhase] = useState<"enter" | "open" | "closed">("enter");
   const [hovered, setHovered] = useState(false);
-  const [shake, setShake] = useState(0);
-  const clicks = useRef(0);
+  const [shake, setShake] = useState(false);
 
   const stickOpen = useMotionValue(0);
   const stickSpring = useSpring(stickOpen, { stiffness: 180, damping: 18 });
-
-  const rotateX = useTransform(mouseY, [-1, 1], [6, -6]);
-  const rotateY = useTransform(mouseX, [-1, 1], [-8, 8]);
+  const rotateX = useTransform(mouseY, [-1, 1], [5, -5]);
+  const rotateY = useTransform(mouseX, [-1, 1], [-7, 7]);
   const floatY = useSpring(0, { stiffness: 40, damping: 12 });
 
   useEffect(() => {
-    if (prefersReducedMotion) {
-      setPhase("closed");
-      stickOpen.set(0);
-      onClack?.();
-      return;
-    }
+    if (prefersReducedMotion) return;
 
-    const t1 = setTimeout(() => {
-      setPhase("open");
-      stickOpen.set(-28);
-    }, 500);
+    const t1 = setTimeout(() => stickOpen.set(-26), 450);
     const t2 = setTimeout(() => {
       stickOpen.set(0);
-      setPhase("closed");
-      setShake(1);
-      onClack?.();
-    }, 1600);
-    const t3 = setTimeout(() => setShake(0), 1900);
+      setShake(true);
+    }, 1500);
+    const t3 = setTimeout(() => setShake(false), 1780);
 
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
     };
-  }, [prefersReducedMotion, stickOpen, onClack]);
+  }, [prefersReducedMotion, stickOpen]);
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -73,7 +58,7 @@ export default function Clapboard({
     let raf = 0;
     const breathe = () => {
       frame += 0.012;
-      floatY.set(Math.sin(frame) * 5);
+      floatY.set(Math.sin(frame) * 4);
       raf = requestAnimationFrame(breathe);
     };
     raf = requestAnimationFrame(breathe);
@@ -82,125 +67,121 @@ export default function Clapboard({
 
   const handleEnter = () => {
     setHovered(true);
-    onHoverChange?.(true);
-    if (!prefersReducedMotion && phase === "closed") stickOpen.set(-8);
+    if (!prefersReducedMotion) stickOpen.set(-8);
   };
 
   const handleLeave = () => {
     setHovered(false);
-    onHoverChange?.(false);
-    if (phase === "closed") stickOpen.set(0);
+    stickOpen.set(0);
   };
 
   const handleClick = () => {
-    clicks.current += 1;
-    if (clicks.current >= 5) {
-      clicks.current = 0;
-      onFiveClicks?.();
+    if (!prefersReducedMotion) {
+      stickOpen.set(-20);
+      setTimeout(() => {
+        stickOpen.set(0);
+        setShake(true);
+        setTimeout(() => setShake(false), 260);
+      }, 180);
     }
-
-    if (prefersReducedMotion) {
-      onClack?.();
-      return;
-    }
-
-    stickOpen.set(-22);
-    setTimeout(() => {
-      stickOpen.set(0);
-      setShake(1);
-      onClack?.();
-      setTimeout(() => setShake(0), 280);
-    }, 220);
+    onToggleTheme?.();
   };
 
   return (
     <motion.button
       type="button"
-      aria-label="Studio clapboard — click to mark the take"
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-pressed={dark}
       data-cursor="clapboard"
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
       onClick={handleClick}
-      initial={{ opacity: 0, scale: 0.92, y: 24 }}
+      initial={{ opacity: 0, scale: 0.94, y: 20 }}
       animate={{
         opacity: 1,
-        scale: hovered ? 1.03 : 1,
-        y: shake ? [0, -2, 2, -1, 0] : 0,
+        scale: hovered ? 1.025 : 1,
+        x: shake ? [0, -2, 2, -1, 0] : 0,
       }}
       transition={{
-        opacity: { duration: 1, ease },
-        scale: { duration: 0.4, ease },
-        y: shake ? { duration: 0.28 } : { duration: 0.6 },
+        opacity: { duration: 0.95, ease },
+        scale: { duration: 0.35, ease },
+        x: shake ? { duration: 0.26 } : { duration: 0.5 },
       }}
-      className="relative mx-auto block w-[min(88vw,420px)] cursor-none border-0 bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-accent/30 sm:w-[440px] md:w-[480px] lg:w-[520px]"
+      className="relative mx-auto block w-[min(90vw,380px)] border-0 bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-accent/35 sm:w-[420px] md:w-[460px] lg:w-[500px]"
       style={{
         y: prefersReducedMotion ? undefined : floatY,
         rotateX: prefersReducedMotion ? 0 : rotateX,
         rotateY: prefersReducedMotion ? 0 : rotateY,
         transformPerspective: 900,
-        filter: hovered
-          ? "drop-shadow(0 28px 40px rgba(17,17,17,0.22))"
-          : "drop-shadow(0 18px 28px rgba(17,17,17,0.14))",
+        filter: dark
+          ? hovered
+            ? "drop-shadow(0 24px 36px rgba(0,0,0,0.55)) drop-shadow(0 0 18px rgba(212,120,79,0.18))"
+            : "drop-shadow(0 16px 28px rgba(0,0,0,0.45)) drop-shadow(0 0 12px rgba(212,120,79,0.1))"
+          : hovered
+            ? "drop-shadow(0 28px 40px rgba(17,17,17,0.28))"
+            : "drop-shadow(0 18px 28px rgba(17,17,17,0.16))",
       }}
     >
-      <svg viewBox="0 0 320 280" className="h-auto w-full" fill="none">
+      <svg viewBox="0 0 340 250" className="h-auto w-full" fill="none">
         <defs>
           <linearGradient id="slateBody" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1a1a1a" />
-            <stop offset="100%" stopColor="#0d0d0d" />
-          </linearGradient>
-          <linearGradient id="slateFace" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#2a2a2a" />
-            <stop offset="100%" stopColor="#141414" />
+            <stop offset="0%" stopColor="#1c1c1c" />
+            <stop offset="100%" stopColor="#0e0e0e" />
           </linearGradient>
         </defs>
 
-        {/* Body */}
-        <rect
-          x="36"
-          y="78"
-          width="248"
-          height="168"
-          rx="10"
-          fill="url(#slateBody)"
-        />
-        <rect
-          x="48"
-          y="96"
-          width="224"
-          height="132"
-          rx="4"
-          fill="url(#slateFace)"
-          stroke="#3a3a3a"
-          strokeWidth="1"
-        />
+        <rect x="28" y="62" width="284" height="160" rx="12" fill="url(#slateBody)" />
+        {dark ? (
+          <rect
+            x="28"
+            y="62"
+            width="284"
+            height="160"
+            rx="12"
+            fill="none"
+            stroke="#d4784f"
+            strokeOpacity="0.28"
+            strokeWidth="1.25"
+          />
+        ) : null}
 
-        {/* Labels */}
         <text
-          x="60"
-          y="118"
-          fill="#8f8b83"
+          x="48"
+          y="92"
+          fill="#8a8680"
           fontSize="9"
           fontFamily="var(--font-body), system-ui"
-          letterSpacing="2"
+          letterSpacing="2.2"
         >
           PRODUCTION
         </text>
         <text
-          x="60"
-          y="138"
-          fill="#f7f5f1"
-          fontSize="16"
-          fontFamily="var(--font-display), system-ui"
-          fontWeight="600"
+          x="248"
+          y="92"
+          fill="#8a8680"
+          fontSize="9"
+          fontFamily="var(--font-body), system-ui"
+          letterSpacing="1.5"
         >
-          THE BETTER ACADEMY
+          EXT. DAY
         </text>
         <text
-          x="60"
-          y="168"
-          fill="#8f8b83"
-          fontSize="9"
+          x="48"
+          y="118"
+          fill="#f4f1ea"
+          fontSize="22"
+          fontFamily="var(--font-display), Georgia, serif"
+          fontStyle="italic"
+          fontWeight="500"
+        >
+          The Better Academy
+        </text>
+
+        <text
+          x="48"
+          y="152"
+          fill="#8a8680"
+          fontSize="8"
           fontFamily="var(--font-body), system-ui"
           letterSpacing="2"
         >
@@ -208,29 +189,30 @@ export default function Clapboard({
         </text>
         <text
           x="120"
-          y="168"
-          fill="#8f8b83"
-          fontSize="9"
+          y="152"
+          fill="#8a8680"
+          fontSize="8"
           fontFamily="var(--font-body), system-ui"
           letterSpacing="2"
         >
           TAKE
         </text>
         <text
-          x="180"
-          y="168"
-          fill="#8f8b83"
-          fontSize="9"
+          x="192"
+          y="152"
+          fill="#8a8680"
+          fontSize="8"
           fontFamily="var(--font-body), system-ui"
           letterSpacing="2"
         >
           ROLL
         </text>
+
         <text
-          x="60"
-          y="190"
-          fill="#f7f5f1"
-          fontSize="18"
+          x="48"
+          y="176"
+          fill="#f4f1ea"
+          fontSize="20"
           fontFamily="var(--font-display), system-ui"
           fontWeight="600"
         >
@@ -238,61 +220,62 @@ export default function Clapboard({
         </text>
         <text
           x="120"
-          y="190"
-          fill="#f7f5f1"
-          fontSize="18"
+          y="176"
+          fill="#f4f1ea"
+          fontSize="20"
           fontFamily="var(--font-display), system-ui"
           fontWeight="600"
         >
           01
         </text>
         <text
-          x="180"
-          y="190"
+          x="192"
+          y="176"
           fill="#b85c38"
-          fontSize="18"
+          fontSize="20"
           fontFamily="var(--font-display), system-ui"
           fontWeight="600"
         >
           A
         </text>
+
         <text
-          x="60"
-          y="214"
-          fill="#8f8b83"
-          fontSize="9"
+          x="48"
+          y="204"
+          fill="#8a8680"
+          fontSize="8"
           fontFamily="var(--font-body), system-ui"
           letterSpacing="2"
         >
-          DATE · LAUNCH 2026
+          DATE
         </text>
-        <line
-          x1="60"
-          y1="224"
-          x2="250"
-          y2="224"
-          stroke="#3a3a3a"
-          strokeWidth="1"
-        />
-
-        {/* Hinge stick */}
-        <motion.g
-          style={{ rotate: stickSpring, transformOrigin: "48px 78px" }}
+        <text
+          x="220"
+          y="204"
+          fill="#f4f1ea"
+          fontSize="11"
+          fontFamily="var(--font-display), system-ui"
+          fontWeight="600"
+          letterSpacing="1"
         >
-          <rect x="36" y="48" width="248" height="32" rx="4" fill="#111" />
-          {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+          LAUNCH 2026
+        </text>
+
+        <motion.g style={{ rotate: stickSpring, transformOrigin: "40px 62px" }}>
+          <rect x="28" y="34" width="284" height="30" rx="4" fill="#111" />
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
             <path
               key={i}
-              d={`M${52 + i * 32} 80 L${68 + i * 32} 48`}
-              stroke={i % 2 === 0 ? "#f7f5f1" : "#111"}
+              d={`M${44 + i * 32} 64 L${60 + i * 32} 34`}
+              stroke={i % 2 === 0 ? "#f4f1ea" : "#111"}
               strokeWidth="14"
             />
           ))}
           <rect
-            x="36"
-            y="48"
-            width="248"
-            height="32"
+            x="28"
+            y="34"
+            width="284"
+            height="30"
             rx="4"
             fill="none"
             stroke="#2a2a2a"
@@ -300,6 +283,7 @@ export default function Clapboard({
           />
         </motion.g>
       </svg>
+
     </motion.button>
   );
 }
