@@ -1,16 +1,25 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { motion, useSpring } from "framer-motion";
 import BrandLogo from "@/components/BrandLogo";
 import Clapboard from "@/components/Clapboard";
 import Countdown from "@/components/Countdown";
-import CustomCursor from "@/components/CustomCursor";
-import DustParticles from "@/components/DustParticles";
 import MagneticCTA from "@/components/MagneticCTA";
 import RotatingHeadline from "@/components/RotatingHeadline";
-import Spotlight from "@/components/Spotlight";
 import StudioBackdrop from "@/components/StudioBackdrop";
+import { AGENCY_URL } from "@/lib/site";
+
+const CustomCursor = dynamic(() => import("@/components/CustomCursor"), {
+  ssr: false,
+});
+const Spotlight = dynamic(() => import("@/components/Spotlight"), {
+  ssr: false,
+});
+const DustParticles = dynamic(() => import("@/components/DustParticles"), {
+  ssr: false,
+});
 
 const ease = [0.16, 1, 0.3, 1] as const;
 const THEME_KEY = "tbaa-theme";
@@ -20,6 +29,7 @@ export default function LaunchPoster() {
   const mouseY = useSpring(0, { damping: 28, stiffness: 70, mass: 1 });
   const [dark, setDark] = useState(false);
   const [ready, setReady] = useState(false);
+  const [fxReady, setFxReady] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem(THEME_KEY);
@@ -27,6 +37,28 @@ export default function LaunchPoster() {
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
     setReady(true);
+
+    let cancelled = false;
+    const enableFx = () => {
+      if (!cancelled) setFxReady(true);
+    };
+
+    let idleId: number | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    if ("requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(enableFx, { timeout: 1200 });
+    } else {
+      timeoutId = setTimeout(enableFx, 400);
+    }
+
+    return () => {
+      cancelled = true;
+      if (idleId !== undefined && "cancelIdleCallback" in window) {
+        window.cancelIdleCallback(idleId);
+      }
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
+    };
   }, []);
 
   useEffect(() => {
@@ -40,7 +72,7 @@ export default function LaunchPoster() {
       mouseX.set((e.clientX / window.innerWidth) * 2 - 1);
       mouseY.set((e.clientY / window.innerHeight) * 2 - 1);
     };
-    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
   }, [mouseX, mouseY]);
 
@@ -50,14 +82,21 @@ export default function LaunchPoster() {
 
   return (
     <div className="relative h-dvh w-full overflow-hidden bg-cream text-ink transition-colors duration-500">
-      <CustomCursor />
-      <Spotlight />
+      {fxReady ? (
+        <>
+          <CustomCursor />
+          <Spotlight />
+          <DustParticles />
+        </>
+      ) : null}
       <div className="paper-overlay" aria-hidden="true" />
       <div className="film-grain" aria-hidden="true" />
 
-      <section className="relative flex h-full flex-col overflow-hidden">
+      <section
+        className="relative flex h-full flex-col overflow-hidden"
+        aria-label="The Better Academy launch"
+      >
         <StudioBackdrop mouseX={mouseX} mouseY={mouseY} dark={dark} />
-        <DustParticles />
 
         <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col px-5 py-5 sm:px-8 sm:py-6 md:px-12 md:py-8">
           <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
@@ -119,16 +158,10 @@ export default function LaunchPoster() {
                   <Countdown />
                   <div className="flex flex-col items-center gap-2.5 sm:flex-row md:justify-start">
                     <MagneticCTA
-                      href="https://thebetteragency.in/"
+                      href={AGENCY_URL}
                       label="Visit The Better Agency"
                       variant="primary"
                     />
-                    {/* <MagneticCTA
-                      href="https://thebetteragency.in/"
-                      label="Visit The Better Agency"
-                      variant="secondary"
-                      external
-                    /> */}
                   </div>
                 </motion.div>
               </div>

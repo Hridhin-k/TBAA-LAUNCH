@@ -5,8 +5,8 @@
   --color-cream-deep: #ebe6dc;
   --color-ink: #111111;
   --color-ink-soft: #1e1e1e;
-  --color-stone: #666666;
-  --color-stone-light: #8f8b83;
+  --color-stone: #555555;
+  --color-stone-light: #6e6a63;
   --color-mist: #ebe6dc;
   --color-mist-dark: #ddd7cc;
   --color-white: #fdfcfa;
@@ -31,8 +31,8 @@ html.dark {
   --color-cream-deep: #1a1714;
   --color-ink: #f5ece5;
   --color-ink-soft: #e8ddd3;
-  --color-stone: #a3958c;
-  --color-stone-light: #7c6f67;
+  --color-stone: #c4b6ac;
+  --color-stone-light: #9a8b82;
   --color-mist: #1a1714;
   --color-mist-dark: #2c2521;
   --color-white: #1d1815;
@@ -205,6 +205,18 @@ html.dark .vignette-studio {
 * {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

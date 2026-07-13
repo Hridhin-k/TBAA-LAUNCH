@@ -65,9 +65,9 @@ export default function MagneticCTA({
           ? "inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-display text-sm font-semibold tracking-tight text-cream outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-7 sm:text-base"
           : "inline-flex items-center gap-2 rounded-full border border-mist-dark bg-transparent px-6 py-3 font-display text-sm font-semibold tracking-tight text-ink outline-none transition-colors hover:border-ink/40 focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-7 sm:text-base"
       }
-      aria-label={`${label} (opens in new tab)`}
     >
-      {label}
+      <span>{label}</span>
+      <span className="sr-only"> (opens in a new tab)</span>
       <motion.span
         animate={{ x: isHovered ? 3 : 0, y: isHovered && external ? -2 : 0 }}
         transition={{ ease: "easeOut", duration: 0.25 }}

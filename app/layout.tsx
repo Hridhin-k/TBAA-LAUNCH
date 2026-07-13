@@ -1,19 +1,27 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Syne } from "next/font/google";
+import {
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TAGLINE,
+  SITE_URL,
+} from "@/lib/site";
 import "./globals.css";
 
 const syne = Syne({
   variable: "--font-syne",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["600", "700"],
   display: "swap",
+  preload: true,
 });
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
   display: "swap",
+  preload: true,
 });
 
 export const viewport: Viewport = {
@@ -26,36 +34,78 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "The Better Academy | Launching Soon",
-  description:
-    "Something Better Takes Time. A premium advertising academy from The Better Agency — launching soon. First batch 2026, Thrissur, India.",
-  metadataBase: new URL("https://tbaa.pages.dev"),
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} | Launching Soon`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: "The Better Agency", url: "https://thebetteragency.in" }],
+  creator: "The Better Agency",
+  publisher: SITE_NAME,
+  category: "education",
+  keywords: [
+    "The Better Academy",
+    "advertising academy",
+    "creative academy India",
+    "Thrissur",
+    "The Better Agency",
+    "founding cohort 2026",
+    "filmmaking",
+    "branding",
+    "storytelling",
+  ],
   alternates: {
     canonical: "/",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
-    title: "The Better Academy | Launching Soon",
-    description:
-      "Something Better Takes Time. A premium advertising academy from The Better Agency — launching soon.",
-    url: "https://tbaa.pages.dev",
-    siteName: "The Better Academy",
+    title: `${SITE_NAME} | Launching Soon`,
+    description: `${SITE_TAGLINE} ${SITE_DESCRIPTION}`,
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    locale: "en_IN",
+    type: "website",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "The Better Academy — Something Better Takes Time.",
+        alt: `${SITE_NAME} — ${SITE_TAGLINE}`,
+        type: "image/jpeg",
       },
     ],
-    locale: "en_IN",
-    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Better Academy | Launching Soon",
-    description:
-      "Something Better Takes Time. A premium advertising academy from The Better Agency — launching soon.",
-    images: ["/og-image.jpg"],
+    title: `${SITE_NAME} | Launching Soon`,
+    description: `${SITE_TAGLINE} ${SITE_DESCRIPTION}`,
+    images: [
+      {
+        url: "/og-image.jpg",
+        alt: `${SITE_NAME} — ${SITE_TAGLINE}`,
+      },
+    ],
+  },
+  icons: {
+    icon: [{ url: "/icon.png", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png", type: "image/png" }],
+  },
+  manifest: "/manifest.webmanifest",
+  other: {
+    "geo.region": "IN-KL",
+    "geo.placename": "Thrissur",
   },
 };
 
@@ -66,7 +116,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="en-IN"
       className={`${syne.variable} ${dmSans.variable} h-full antialiased`}
     >
       <body className="min-h-dvh bg-cream font-body text-ink antialiased selection:bg-accent selection:text-white">
